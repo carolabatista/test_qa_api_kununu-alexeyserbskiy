@@ -13,3 +13,12 @@ Having this in mind you’ll prototype a proof-of-concept to the CTO so he under
 Please build a project that ensures a rigid testing plan of the following REQRES API: **[https://reqres.in/](https://reqres.in/).**
 
 You’ll find the REST operations permitted in the link provided. Exploit the greater coverage as possible with all possible scenarios in mind. 
+
+## Requirements
+
+Feel free to adopt the best technologies you find suitable for the end goal. Still we need to impose the following requirements:
+
+1. Please use git as a version control system. Make sure that you have clear commit messages and understandable steps in your git-history ([How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)).
+2. Document your work.
+3. Provide a README and instructions for how we can run your solution. **Note** It should be runnable with one command.
+4. Respect modularity and scalable solution for further test suites.
