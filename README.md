@@ -1,5 +1,12 @@
 # Test for Applicants
 
+## Instructions from Alexey Serbskiy
+1. install Python https://www.python.org/downloads/  
+2. open terminal and navigate the a project folder
+3. run command 'pip3 install requirements' 
+4. run command 'pytest ...' 
+
+
 ## Context
 
 As a QA in an Agile team, you’re part of a team developing a new cool feature, which mainly comprises a front-end application and a REST API. 
