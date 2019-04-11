@@ -55,8 +55,9 @@ class TestRegistration (BaseSettings):
 
     # Testcase for registration attempt with already registered email
     def test_Email_Already_Exists(self):
-        registration = requests.post("https://reqres.in/api/register",
-                                     json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
+        registration = TestRegistration.register_Request("test@test{}.test".format(BaseSettings.users), "Password1")
+        #registration = requests.post("https://reqres.in/api/register",
+                                    # json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
 
         # Placeholders for response assertion. In theory, response must say that this email is already used.
         # But reqres does not check email uniqueness.
