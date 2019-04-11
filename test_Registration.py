@@ -29,7 +29,7 @@ class TestRegistration (BaseSettings):
         current_token = TestRegistration.token + "current"
 
         TestRegistration.test_Register_New_User(self)
-        assert (current_token != TestRegistration.token)
+        assert (current_token != TestRegistration.token), "User token is not unique"
 
     # Testcase for registration attempt with already registered email
     def test_Email_Already_Exists(self):
@@ -51,6 +51,25 @@ class TestRegistration (BaseSettings):
         registration = requests.post("https://reqres.in/api/register", json={"email": "test@test{}.test".format(users)})
         assert(registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
         assert(registration.json()["error"] == "Missing password"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing password\""
+
+    def test_Empty_Email(self):
+        registration = requests.post("https://reqres.in/api/register", json={"email": "", "password": "Password1"})
+        assert (registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
+        assert (registration.json()["error"] == "Missing email or username"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing email or username\""
+
+    def test_Empty_Password(self):
+        users = BaseSettings.users + 1
+        registration = requests.post("https://reqres.in/api/register", json={"email": "test@test{}.test".format(users), "password": ""})
+        assert (registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
+        assert (registration.json()["error"] == "Missing password"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing password\""
+
+    # Just a placeholder, because reqres does not validate provided email addresses.
+    #def test_Email_Validation(self):
+
+    # Just a placeholder, because reqres does not validate provided passwords.
+    # def test_Password_Validation(self):
+
+
 
 
 
