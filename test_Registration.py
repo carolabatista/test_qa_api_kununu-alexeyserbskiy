@@ -3,7 +3,7 @@ import requests
 
 class TestRegistration (BaseSettings):
 
-    #storing token is needed for testing its uniqueness
+    # storing token is needed for testing its uniqueness
     token: str
 
     # Testcase for positive straight scenario of registration
@@ -20,12 +20,12 @@ class TestRegistration (BaseSettings):
         # storing token is needed for further testing of its uniqueness
         TestRegistration.token = registration.json()["token"]
 
-
     # Testcase for checking uniqueness of generated tokens
     def test_Registration_Token_is_Unique(self):
         TestRegistration.test_Register_New_User(self)
 
-        # "current" string is added to imitate that server always generates a new token (what it does not), so the test will not fail.
+        # "current" string is added to imitate that server always generates a new token (what it does not),
+        # so the test will not fail.
         current_token = TestRegistration.token + "current"
 
         TestRegistration.test_Register_New_User(self)
@@ -35,7 +35,8 @@ class TestRegistration (BaseSettings):
     def test_Email_Already_Exists(self):
         registration = requests.post("https://reqres.in/api/register", json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
 
-        #Placeholder for response assertion. In theory, response must say that this email is already used. But reqres only imitates some logic and of course store any data. So, it does not check email uniqueness.
+        # Placeholder for response assertion. In theory, response must say that this email is already used.
+        # But reqres only imitates some logic and of course store any data. So, it does not check email uniqueness.
         print("Asserting that response code is 409 or smth similar")
         print("Asserting that response JSON tells about duplicating email")
 
@@ -64,10 +65,14 @@ class TestRegistration (BaseSettings):
         assert (registration.json()["error"] == "Missing password"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing password\""
 
     # Just a placeholder, because reqres does not validate provided email addresses.
-    #def test_Email_Validation(self):
+    # def test_Email_Validation(self):
 
     # Just a placeholder, because reqres does not validate provided passwords.
     # def test_Password_Validation(self):
+
+    # Because reqres does not validate provided email and password at all (exept empty cases), test has only placeholders for these inputs validation.
+    # In theory, inputs could be tests via using data files with email and passwords and pytest-expect plugin,
+    # so even if one check of validation is failed, the hole test will not stop and will check other data from files.
 
 
 
