@@ -55,7 +55,8 @@ class TestRegistration (BaseSettings):
 
     # Testcase for registration attempt with already registered email
     def test_Email_Already_Exists(self):
-        registration = requests.post("https://reqres.in/api/register", json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
+        registration = requests.post("https://reqres.in/api/register",
+                                     json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
 
         # Placeholders for response assertion. In theory, response must say that this email is already used.
         # But reqres does not check email uniqueness.
@@ -66,25 +67,28 @@ class TestRegistration (BaseSettings):
     def test_No_Email(self):
         registration = requests.post("https://reqres.in/api/register", json={"password": "Password1"})
         assert(registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
-        assert(registration.json()["error"] == "Missing email or username"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing email or username\""
+        assert(registration.json()["error"] == "Missing email or username"), \
+            "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing email or username\""
 
     # Testcase for registration attempt with no password in request
     def test_No_Password(self):
         users = BaseSettings.users + 1
         registration = requests.post("https://reqres.in/api/register", json={"email": "test@test{}.test".format(users)})
         assert(registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
-        assert(registration.json()["error"] == "Missing password"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing password\""
+        assert(registration.json()["error"] == "Missing password"), \
+            "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing password\""
 
     def test_Empty_Email(self):
-        registration = requests.post("https://reqres.in/api/register", json={"email": "", "password": "Password1"})
-        assert (registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
-        assert (registration.json()["error"] == "Missing email or username"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing email or username\""
+        empty_email = TestRegistration.register_Request("test@test{}.test".format(BaseSettings.users + 1), "")
+        assert (empty_email.code == 400), "Response code is {}".format(empty_email.code) + " instead of 400"
+        assert (empty_email.json["error"] == "Missing password"), "Response JSON error is \"" + empty_email.json[
+            "error"] + "\" instead of \"Missing password\""
 
     def test_Empty_Password(self):
         empty_password = TestRegistration.register_Request("test@test{}.test".format(BaseSettings.users + 1), "")
         assert(empty_password.code == 400), "Response code is {}".format(empty_password.code) + " instead of 400"
-        assert (empty_password.json["error"] == "Missing password"), "Response JSON error is \"" + empty_password.json[
-            "error"] + "\" instead of \"Missing password\""
+        assert (empty_password.json["error"] == "Missing password"), \
+            "Response JSON error is \"" + empty_password.json["error"] + "\" instead of \"Missing password\""
 
     # Just a placeholder, because reqres does not validate provided email addresses.
     # def test_Email_Validation(self):
@@ -93,9 +97,9 @@ class TestRegistration (BaseSettings):
     # def test_Password_Validation(self):
 
     # Because reqres does not validate provided email and password at all (exept empty cases), test has only placeholders for these inputs validation.
-    # In theory, inputs could be tests via using custom_Register_Request function and asserting returned boolean value.
+    # In theory, inputs could be tests via using register_Request function and asserting returned class values.
     # Also, data files with email and passwords to test and pytest-expect plugin could be useful,
-    # so even if one check of validation is failed, the hole test will not stop and will check other data from files.
+    # so even if one check of validation is failed, the hole test will not stop and will finish checking data from files.
 
 
 
