@@ -1,10 +1,11 @@
 # Test for Applicants
 
 ## Instructions from Alexey Serbskiy
-1. install Python https://www.python.org/downloads/  
-2. open terminal and navigate the a project folder
-3. run command 'pip3 install requirements' 
-4. run command 'pytest ...' 
+
+1. install Python 3.7.3 https://www.python.org/downloads/
+2. download project from gitHub 
+3. open terminal and navigate to the a project folder
+3. run bash script testTask.sh via command "bash testTask.sh", it should install all needed packages and run tests.
 
 
 ## Context
