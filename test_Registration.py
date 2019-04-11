@@ -1,7 +1,24 @@
 from BaseSettings import BaseSettings
+from BaseSettings import Response
 import requests
 
+
 class TestRegistration (BaseSettings):
+
+    # Function for requesting registration with chosen email and password
+    # Can be used for checking mail and password inputs validation and used in other classes
+    def register_Request(email: str, password: str) -> Response:
+        register_response = Response
+        registration = requests.post("https://reqres.in/api/register",
+                                     json={"email": "{}".format(email), "password": "{}".format(password)})
+        register_response.code = registration.status_code
+        register_response.json = registration.json()
+        if registration.status_code == 201 :
+            BaseSettings.users += 1
+            with open("users.txt", "a") as file:
+                file.write("\n{}".format(email) + " / " + "{}".format(password))
+                file.close()
+        return register_response
 
     # storing token is needed for testing its uniqueness
     token: str
@@ -24,20 +41,6 @@ class TestRegistration (BaseSettings):
         with open("users.txt", "a" ) as file:
             file.write("\ntest@test{}.test".format(users) + " / Password1")
             file.close()
-
-    # Function for requesting registration with chosen email and password
-    # Can be used for checking mail and password inputs validation and used in other classes
-    def custom_Register_Request(email: str, password: str) -> bool:
-        registration = requests.post("https://reqres.in/api/register",
-                                     json={"email": "{}".format(email), "password": "{}".format(password)})
-        if registration.status_code == 201 :
-            BaseSettings.users += 1
-            with open("users.txt", "a") as file:
-                file.write("\n{}".format(email) + " / " + "{}".format(password))
-                file.close()
-            return True
-        return False
-
 
     # Testcase for checking uniqueness of generated tokens
     def test_Registration_Token_is_Unique(self):
@@ -78,10 +81,10 @@ class TestRegistration (BaseSettings):
         assert (registration.json()["error"] == "Missing email or username"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing email or username\""
 
     def test_Empty_Password(self):
-        users = BaseSettings.users + 1
-        registration = requests.post("https://reqres.in/api/register", json={"email": "test@test{}.test".format(users), "password": ""})
-        assert (registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
-        assert (registration.json()["error"] == "Missing password"), "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing password\""
+        empty_password = TestRegistration.register_Request("test@test{}.test".format(BaseSettings.users + 1), "")
+        assert(empty_password.code == 400), "Response code is {}".format(empty_password.code) + " instead of 400"
+        assert (empty_password.json["error"] == "Missing password"), "Response JSON error is \"" + empty_password.json[
+            "error"] + "\" instead of \"Missing password\""
 
     # Just a placeholder, because reqres does not validate provided email addresses.
     # def test_Email_Validation(self):

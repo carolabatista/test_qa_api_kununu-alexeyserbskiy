@@ -1,6 +1,5 @@
 from unittest import TestCase
 import json
-import requests
 
 
 class BaseSettings(TestCase):
@@ -22,11 +21,13 @@ class BaseSettings(TestCase):
     def tearDown(self):
         print("----Current testcase: " + self._testMethodName + " is over----")
 
-    # Function, that will store JSONs
-    def write_JSON(self, endpoint, filename):
-        jsondata = requests.get(endpoint).json()
-        with open(filename + ".txt", "w") as json_file:
-            json.dump(jsondata, json_file)
+
+class Response:
+    def __init__(self):
+        self.code: str
+        self.json: json
+
+
 
 
 
