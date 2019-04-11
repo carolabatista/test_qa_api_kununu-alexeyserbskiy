@@ -39,7 +39,7 @@ class TestRegistration (BaseSettings):
 
         # successfully registered user to file
         with open("users.txt", "a" ) as file:
-            file.write("\ntest@test{}.test".format(users) + " / Password1")
+            file.write("\nregistrationuser{}@test.test".format(users) + " / Password1")
             file.close()
 
     # Testcase for checking uniqueness of generated tokens
@@ -55,7 +55,7 @@ class TestRegistration (BaseSettings):
 
     # Testcase for registration attempt with already registered email
     def test_Email_Already_Exists(self):
-        registration = TestRegistration.register_Request("test@test{}.test".format(BaseSettings.users), "Password1")
+        registration = TestRegistration.register_Request("registrationuser{}@test.test".format(BaseSettings.users), "Password1")
         #registration = requests.post("https://reqres.in/api/register",
                                     # json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
 
