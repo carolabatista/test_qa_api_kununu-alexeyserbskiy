@@ -20,11 +20,30 @@ class TestRegistration (BaseSettings):
         # storing token is needed for further testing of its uniqueness
         TestRegistration.token = registration.json()["token"]
 
+        # successfully registered user to file
+        with open("users.txt", "a" ) as file:
+            file.write("\ntest@test{}.test".format(users) + " / Password1")
+            file.close()
+
+    # Function for requesting registration with chosen email and password
+    # Can be used for checking mail and password inputs validation and used in other classes
+    def custom_Register_Request(email: str, password: str) -> bool:
+        registration = requests.post("https://reqres.in/api/register",
+                                     json={"email": "{}".format(email), "password": "{}".format(password)})
+        if registration.status_code == 201 :
+            BaseSettings.users += 1
+            with open("users.txt", "a") as file:
+                file.write("\n{}".format(email) + " / " + "{}".format(password))
+                file.close()
+            return True
+        return False
+
+
     # Testcase for checking uniqueness of generated tokens
     def test_Registration_Token_is_Unique(self):
         TestRegistration.test_Register_New_User(self)
 
-        # "current" string is added to imitate that server always generates a new token (what it does not),
+        # "current" string is added to imitate that server always generates a new token (reqres does not),
         # so the test will not fail.
         current_token = TestRegistration.token + "current"
 
@@ -35,10 +54,10 @@ class TestRegistration (BaseSettings):
     def test_Email_Already_Exists(self):
         registration = requests.post("https://reqres.in/api/register", json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
 
-        # Placeholder for response assertion. In theory, response must say that this email is already used.
-        # But reqres only imitates some logic and of course store any data. So, it does not check email uniqueness.
-        print("Asserting that response code is 409 or smth similar")
-        print("Asserting that response JSON tells about duplicating email")
+        # Placeholders for response assertion. In theory, response must say that this email is already used.
+        # But reqres does not check email uniqueness.
+        # Asserting that response code is 409 or smth similar
+        # Asserting that response JSON tells about duplicating email
 
     # Testcase for registration attempt with no email in request
     def test_No_Email(self):
@@ -71,7 +90,8 @@ class TestRegistration (BaseSettings):
     # def test_Password_Validation(self):
 
     # Because reqres does not validate provided email and password at all (exept empty cases), test has only placeholders for these inputs validation.
-    # In theory, inputs could be tests via using data files with email and passwords and pytest-expect plugin,
+    # In theory, inputs could be tests via using custom_Register_Request function and asserting returned boolean value.
+    # Also, data files with email and passwords to test and pytest-expect plugin could be useful,
     # so even if one check of validation is failed, the hole test will not stop and will check other data from files.
 
 
