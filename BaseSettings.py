@@ -14,7 +14,7 @@ class BaseSettings(TestCase):
         print("----Test suite started----")
 
     def teardown_class(self):
-        print("----Test suite is over----")
+        print("----Test suite is over----\n")
 
     # Used for every test method in class
     def setUp(self):

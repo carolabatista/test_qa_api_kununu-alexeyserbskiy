@@ -5,7 +5,7 @@ def setup_module(module):
 # Or instead of setup method, there can be teardown one, which will do the same,
 # but in the end, will clean testing environment after a test run.
 
-    print("Preparing files for storing additional test data")
+    print("\n\nPreparing files for storing additional test data\n")
     with open("users.txt", "w") as file:
         file.write("Created valid users:")
         file.close()

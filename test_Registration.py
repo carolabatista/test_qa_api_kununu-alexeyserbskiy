@@ -3,22 +3,25 @@ from BaseSettings import Response
 import requests
 
 
+# Function for requesting registration with chosen email and password
+# Can be used for checking mail and password inputs validation and used in other classes
+def register_Request(email: str, password: str) -> Response:
+    register_response = Response
+    registration = requests.post(BaseSettings.endpoint + "register",
+                                 json={"email": "{}".format(email), "password": "{}".format(password)})
+    register_response.code = registration.status_code
+    register_response.json = registration.json()
+    if registration.status_code == 201:
+        BaseSettings.users += 1
+        with open("users.txt", "a") as file:
+            file.write("\n{}".format(email) + " / " + "{}".format(password))
+            file.close()
+    return register_response
+
+
 class TestRegistration (BaseSettings):
 
-    # Function for requesting registration with chosen email and password
-    # Can be used for checking mail and password inputs validation and used in other classes
-    def register_Request(email: str, password: str) -> Response:
-        register_response = Response
-        registration = requests.post(BaseSettings.endpoint + "register",
-                                     json={"email": "{}".format(email), "password": "{}".format(password)})
-        register_response.code = registration.status_code
-        register_response.json = registration.json()
-        if registration.status_code == 201:
-            BaseSettings.users += 1
-            with open("users.txt", "a") as file:
-                file.write("\n{}".format(email) + " / " + "{}".format(password))
-                file.close()
-        return register_response
+
 
     # storing token is needed for testing its uniqueness
     token: str
@@ -55,7 +58,7 @@ class TestRegistration (BaseSettings):
 
     # Testcase for registration attempt with already registered email
     def test_Email_Already_Exists(self):
-        registration = TestRegistration.register_Request("registrationuser{}@test.test".format(BaseSettings.users), "Password1")
+        registration = register_Request("registrationuser{}@test.test".format(BaseSettings.users), "Password1")
         #registration = requests.post("https://reqres.in/api/register",
                                     # json={"email": "test@test{}.test".format(BaseSettings.users), "password": "Password1"})
 
@@ -65,28 +68,28 @@ class TestRegistration (BaseSettings):
         # Asserting that response JSON tells about duplicating email
 
     # Testcase for registration attempt with no email in request
-    def test_No_Email(self):
+    def test_No_Email_Register(self):
         registration = requests.post(BaseSettings.endpoint + "register", json={"password": "Password1"})
         assert(registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
         assert(registration.json()["error"] == "Missing email or username"), \
             "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing email or username\""
 
     # Testcase for registration attempt with no password in request
-    def test_No_Password(self):
+    def test_No_Password_Register(self):
         users = BaseSettings.users + 1
         registration = requests.post(BaseSettings.endpoint + "register", json={"email": "test@test{}.test".format(users)})
         assert(registration.status_code == 400), "Response code is {}".format(registration.status_code) + " instead of 400"
         assert(registration.json()["error"] == "Missing password"), \
             "Response JSON error is \"" + registration.json()["error"] + "\" instead of \"Missing password\""
 
-    def test_Empty_Email(self):
-        empty_email = TestRegistration.register_Request("test@test{}.test".format(BaseSettings.users + 1), "")
+    def test_Empty_Email_Register(self):
+        empty_email = register_Request("", "Password1")
         assert (empty_email.code == 400), "Response code is {}".format(empty_email.code) + " instead of 400"
-        assert (empty_email.json["error"] == "Missing password"), "Response JSON error is \"" + empty_email.json[
-            "error"] + "\" instead of \"Missing password\""
+        assert (empty_email.json["error"] == "Missing email or username"), \
+            "Response JSON error is \"" + empty_email.json["error"] + "\" instead of \"Missing password\""
 
-    def test_Empty_Password(self):
-        empty_password = TestRegistration.register_Request("test@test{}.test".format(BaseSettings.users + 1), "")
+    def test_Empty_Password_Register(self):
+        empty_password = register_Request("test@test{}.test".format(BaseSettings.users + 1), "")
         assert(empty_password.code == 400), "Response code is {}".format(empty_password.code) + " instead of 400"
         assert (empty_password.json["error"] == "Missing password"), \
             "Response JSON error is \"" + empty_password.json["error"] + "\" instead of \"Missing password\""
