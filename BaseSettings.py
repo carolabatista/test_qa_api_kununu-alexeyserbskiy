@@ -4,6 +4,8 @@ import json
 
 class BaseSettings(TestCase):
 
+    endpoint = "https://reqres.in/api/"
+
     #Amount of users, created during a tests run
     users = 0
 
