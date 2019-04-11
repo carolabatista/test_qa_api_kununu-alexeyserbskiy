@@ -84,6 +84,27 @@ class TestLogin (BaseSettings):
         assert (empty_password.json["error"] == "Missing password"), \
                 "Response JSON error is \"" + empty_password.json["error"] + "\" instead of \"Missing password\""
 
+    def test_Email_Not_Exists(self):
+        login_user_number = "loginuser" + str(BaseSettings.users + 1)
+        email_not_exists = TestLogin.login("{}@test.test".format(login_user_number), "Password1")
+
+        # Placeholders for response assertion. In theory, response must say that this email is not registered.
+        # But reqres does not handle that case.
+        # Asserting that response code is 400
+        # Asserting that response JSON tells about not registered email
+        # or about wrong pair email/password (depends on the service realisation)
+
+    def test_Wrong_Password(self):
+        login_user_number = "loginuser" + str(BaseSettings.users + 1)
+        register_Request("{}@test.test".format(login_user_number), "Password1")
+        empty_password = TestLogin.login("{}@test.test".format(login_user_number), "wrong password")
+
+        # Placeholders for response assertion. In theory, response must say that this password is wrong.
+        # But reqres does not handle that case.
+        # Asserting that response code is 403
+        # Asserting that response JSON tells about wrong password pair
+        # or about wrong email/password(depends on the service realisation)
+
 
 
 
